@@ -1,54 +1,80 @@
 package huge;
 
-//import java.lang.Math;
-//good for double bruh = Math.pow(2,5);
-
 public class HugeInteger {
 
-	private byte[] NumArr; //array holding the hugeinteger
-	private String[] StringArr; //intermediate characters.
+	private char[] charArr; //array holding chars
+	private int[] intArr; //sanitized numbers!
 	private boolean negative; //true if negative. false if positive.
-	private int digits; //how many digits long
-	
-
-	//in order to implement hugemungus, we can probably just do a
-	//phat array of integers 0-9.
-	//the array should only be as long as the thing that you put in it
-	//eg 2543 should make a 4 long array
-	//eg "42" should make a 2 long array
-	
-	//but how do we handle negatives? 
-	//probably should just have a flag if negative.
-	//if - * + then - etc
-	//also if the -ve has more digits than the +ve, output is -ve
-	//etc
-	
-	//how to add?
-	//loop from the right digit and move left
-	//take note of any carry's 
-	//keep on moving left
-	
 	
 	//constructors
-	public HugeInteger(String val) {
+	public HugeInteger(String val) throws ArithmeticException {
+
+		//turn string into huge integer
 		
-		//used to create a hugeinteger from a decimal string
-		//needs to account for minus sign.
-		//must throw an exception if other characters used.
+		//convert string to chars
+		val.getChars(0, val.length(), this.charArr, 0);
 		
-		//what is length?
-		this.digits = val.length(); //need to -1 for '\0'? idk
+		//if there is anything that isnt a number or negative in first
+		//then throw error
+		if(this.charArr[0] != '-' 
+		|| this.charArr[0] != '0'
+		|| this.charArr[0] != '1'
+		|| this.charArr[0] != '2'
+		|| this.charArr[0] != '3'
+		|| this.charArr[0] != '4'
+		|| this.charArr[0] != '5'
+		|| this.charArr[0] != '6'
+		|| this.charArr[0] != '7'
+		|| this.charArr[0] != '8'
+		|| this.charArr[0] != '9') {
+			throw new ArithmeticException("Not a valid HugeInteger");
+		}
 		
-		//is it negative?
-		//parse string for a -ve sign
-		//this.negative = 0 if positive, = 1 if negative.
-		this.negative = val.contains("-");
+		//if there are any other characters elsewhere
+		//including a stray negative, then throw error.
+		for(int i=0; i<val.length(); i++) {
+			if(this.charArr[i] != '0'
+			|| this.charArr[i] != '1'
+			|| this.charArr[i] != '2'
+			|| this.charArr[i] != '3'
+			|| this.charArr[i] != '4'
+			|| this.charArr[i] != '5'
+			|| this.charArr[i] != '6'
+			|| this.charArr[i] != '7'
+			|| this.charArr[i] != '8'
+			|| this.charArr[i] != '9') {
+				throw new ArithmeticException("Not a valid HugeInteger");
+			}
+		}
 		
-		//split string into chars
-		//"" is a regex meaning split every character. 
-		this.StringArr = val.split("");
+		//now that we know its valid, is it negative? 
+		if(this.charArr[0] == '-') {
+			this.negative = true;
+		}
+		else {
+			this.negative = false;
+		}
 		
-		//now convert everything in StringArr to NumArr
+		//now we can copy our stuff to an int array.
+		//if its negative then we make it one smaller.
+		if(this.negative == false) {
+			for(int i=0; i < charArr.length; i++) {
+				this.intArr[i] = charArr[i];
+			}
+		}
+		else if(this.negative == true) {
+			for(int i=1; i < charArr.length; i++) {
+				this.intArr[i-1] = charArr[i];
+			}
+		}
+		//now we have a sanitized HugeInteger in intArr.
+		//they are of type integer which means you can do arithmetic
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -58,8 +84,7 @@ public class HugeInteger {
 	public HugeInteger(int n) {
 		
 		//used to create a hugeinteger from integer n
-		
-		//this.placeholder = stuff
+
 		
 	}
 
@@ -103,17 +128,15 @@ public class HugeInteger {
 	
 	public static void main(String[] args) {
 
+		//test string constructor
+		String strInput = "-322";
 		
-		System.out.println("hello world");
+		HugeInteger hugey = new HugeInteger(strInput);
 		
-		int VirginInt = 3+4;
-		
-		int ChadInt = 2*4;
-		
-		System.out.println(VirginInt);
-		System.out.println(ChadInt);
+		for(int i=0; i<hugey.intArr.length; i++) {
+			System.out.println(hugey.intArr[i]);
+		}
 
-		
 		
 	}
 

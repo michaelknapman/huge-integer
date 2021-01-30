@@ -1,6 +1,8 @@
 package huge;
 
 import java.util.Arrays;
+//import java.util.Random; //used for random
+import java.util.concurrent.ThreadLocalRandom; //used for random
 
 public class HugeInteger {
 
@@ -8,52 +10,40 @@ public class HugeInteger {
 
 	private int[] intArr; //final array.
 	private boolean negative; //true if negative. false if positive.
-	
-	//note, if the integer is 145,
-	//intArr's format is [5,4,1].
+
 	
 	//constructors
 	public HugeInteger(String val) throws ArithmeticException {
-
-		//turn string into huge integer
 		
-		//convert string to chars
-		char[] charArr = new char[val.length()]; //initialize
-		val.getChars(0, val.length(), charArr, 0);
+		//Trivial case if "0".
+		if(val == "0") {
+			this.intArr = new int[0];
+			this.negative = false;
+			return;
+		}
 		
-//		//TODO: fix these checks
-//		//if there is anything that isnt a number or negative in first
-//		//then throw error
-//		//also '0' is invalid in 0th position.
-//		if(this.charArr[0] != '-' 
-//		|| this.charArr[0] != '1'
-//		|| this.charArr[0] != '2'
-//		|| this.charArr[0] != '3'
-//		|| this.charArr[0] != '4'
-//		|| this.charArr[0] != '5'
-//		|| this.charArr[0] != '6'
-//		|| this.charArr[0] != '7'
-//		|| this.charArr[0] != '8'
-//		|| this.charArr[0] != '9') {
-//			throw new ArithmeticException("bruh");
-//		}
-//		
-//		//if there are any other characters elsewhere
-//		//including a stray negative, then throw error.
-//		for(int i=0; i<val.length(); i++) {
-//			if(this.charArr[i] != '0'
-//			|| this.charArr[i] != '1'
-//			|| this.charArr[i] != '2'
-//			|| this.charArr[i] != '3'
-//			|| this.charArr[i] != '4'
-//			|| this.charArr[i] != '5'
-//			|| this.charArr[i] != '6'
-//			|| this.charArr[i] != '7'
-//			|| this.charArr[i] != '8'
-//			|| this.charArr[i] != '9') {
-//				throw new ArithmeticException("Not a valid HugeInteger");
-//			}
-//		}
+		
+		//first handle leading negative and remove it if it exists
+		char firstChar = val.charAt(0);
+		String newval = "";
+		if(firstChar == '-') {
+			this.negative = true;
+			newval = val.substring(1); //new string without leading negative
+		}
+		
+		//then remove leading zeroes from newval
+		newval.replaceFirst("^0+(?!$)", "");
+		
+		//now check if there are any illegal characters still in string
+		if(newval.matches("\\d+") == true) {
+			throw new ArithmeticException("There are non numeric characters in the string.");
+		}
+		
+		//now turn processed string into huge integer.
+		
+		//First step, convert string to chars
+		char[] charArr = new char[newval.length()]; //initialize
+		newval.getChars(0, newval.length(), charArr, 0);
 		
 		//now that we know its valid, is it negative? 
 		if(charArr[0] == '-') {
@@ -93,60 +83,70 @@ public class HugeInteger {
 	}
 	
 	
-	public HugeInteger(int n) {
+	public HugeInteger(int n) throws ArithmeticException {
 		
-		//TODO: required to throw exception if wrong!
-		
-		//used to create a hugeinteger from integer n
+		//used to create a hugeinteger from a random integer of size n
 	
-		int ncopy = n; //copy of n
+		//first create the random integer
+		//due to the possibility of being supplied n = 10000, int wont work
+		//we need to directly randomize each array element
+		//except for the final array element, which cannot be 0
+		//also randomize the +ve or -ve.
 		
-		//is it negative?
-		if(ncopy < 0) {
-			this.negative = true;
-		}
-		else if(ncopy >= 0) {
+		//first check to see if you put in a valid number
+		
+		//trivial case if input length 0
+		if(n == 0) {
+			this.intArr = new int[0];
 			this.negative = false;
+			return;
 		}
-		
-		//if its negative, make it the positive complement.
-		if(this.negative == true) {
-			ncopy = ncopy - 2*ncopy;
+		//if less than 0 length
+		else if(n<0) {
+			throw new ArithmeticException("A random integer can't have negative length.");
 		}
-		
-		//now find the length using a string
-		String numstr = String.valueOf(ncopy);
-		int templength = numstr.length();
-		
-		//use length to initialize intArr
-		this.intArr = new int[templength];
-		
-		//extract digits using the modulo stuff from 
-		//dr hassan's compeng 2sh4
-		int theCount = 0; //counter
-		while(ncopy > 0) {
-			int digit = ncopy%10;
-			ncopy = ncopy / 10;
-			intArr[theCount] = digit;
-			theCount++;
+		else if(n>100000) {
+			throw new ArithmeticException("That is like way too long, above 100000 digits in length.");
 		}
-		
+		else {
+			//Random true or false
+			this.negative = Math.random() < 0.5;
+			
+			//create an empty int array of length n
+			this.intArr = new int[n];
+			
+			//loop through each entry except leading and set to a random integer, 0 to 10
+			for(int i=0; i<n-1; i++) {
+				this.intArr[i] = ThreadLocalRandom.current().nextInt(0, 9 + 1); //from 0 to 9. also +1 because convention
+			}
+			//now for the leading entry, set between 1 to 9
+			this.intArr[n-1] = ThreadLocalRandom.current().nextInt(1, 9 + 1);
+		}
 	}
 	
 	//constructor required for add and other stuff
 	//usually used for an array of zeroes of some digits length.
 	//but you can fill with anything!
-	public HugeInteger(int value, int digits) {
-		if(value >= 0) {
-			this.negative = false;
+	public HugeInteger(int value, boolean neg, int digits) throws ArithmeticException {
+		
+		//if less than 0 length
+		if(digits<0) {
+			throw new ArithmeticException("An integer can't have negative length.");
+		}
+		else if(digits>100000) {
+			throw new ArithmeticException("That is like way too long, above 100000 digits in length.");
+		}
+		else if(value<0) {
+			throw new ArithmeticException("Value can't be negative. Use the boolean for that.");
+		}
+		else {
+			this.negative = neg;
+			
 			intArr = new int[digits];
 			Arrays.fill(intArr, value);
 		}
-		else {
-			this.negative = true;
-			intArr = new int[digits];
-			Arrays.fill(intArr, -value);
-		}
+
+
 	}
 	
 
@@ -163,7 +163,7 @@ public class HugeInteger {
 		//or this becomes bigger by a decimal place when h is added
 		//solution: make a third hugeinteger that is 1 bigger than both!
 		//add the two to this hugeinteger
-		//then make a 4th hugeinteger that is chopped down to size. no zeroes at end.
+		//then make a 4th hugeinteger that is chopped down to size. no leading zeroes.
 		//then do at the end:
 		//this.intArr = 4thHuge.intArr 
 		//account for negatives by using a conditional.
@@ -172,7 +172,7 @@ public class HugeInteger {
 		//filled with zeroes.
 		//then copy bigger array into sum
 		if(this.intArr.length >= h.intArr.length) {
-			HugeInteger sum = new HugeInteger(0,this.intArr.length+1);
+			HugeInteger sum = new HugeInteger(0,false,this.intArr.length+1);
 			//copy the bigger array into sum.
 			for(int i=0; i<this.intArr.length; i++) {
 				sum.intArr[i] = this.intArr[i];
@@ -211,7 +211,7 @@ public class HugeInteger {
 			
 		}
 		else {
-			HugeInteger sum = new HugeInteger(0,h.intArr.length+1);
+			HugeInteger sum = new HugeInteger(0,false,h.intArr.length+1);
 			//copy the bigger array into sum.
 			for(int i=0; i<h.intArr.length; i++) {
 				sum.intArr[i] = h.intArr[i];
@@ -298,33 +298,56 @@ public class HugeInteger {
 	public String toString() {
 		
 		//returns a string representing the digits of the
-		//decimal representation of this HugeInteger
+		//decimal representation of this HugeInteger in proper order
 		
-		return ""; //placeholder 
+		//initialize our output string
+		String out = new String();
+		out = "";
+		
+		//handle negative
+		if(this.negative == true) {
+			out = out + "-" + "\n";
+		}
+		
+		//append each entry.
+		for(int i=this.intArr.length-1; i>=0; i--) {
+			out = out + this.intArr[i] + "\n";
+		}
+		
+		return out; 
 	}
-		
-	
-		
 		
 	
 	public static void main(String[] args) {
 
+		//remember that if you supply "-1245"
+		//intArr's format is [5,4,2,1].
+		//printed, will look like
+		//true
+		//5
+		//4
+		//2
+		//1
+		
 		//test string constructor
-//		String strInput = "1245";
-//		
-//		HugeInteger hugey = new HugeInteger(strInput);
-//		
-//		System.out.println(hugey.negative);
-//		
-//		for(int i=0; i<hugey.intArr.length; i++) {
-//			System.out.println(hugey.intArr[i]);
-//		}
+		String strInput = "1245";
+		
+		HugeInteger hugey = new HugeInteger(strInput);
+		
+		System.out.println(hugey.negative);
+		
+		for(int i=0; i<hugey.intArr.length; i++) {
+			System.out.println(hugey.intArr[i]);
+		}
+		
+		System.out.println("heres the toString");
+		System.out.println(hugey.toString());
 		
 		
 		
 //		//test int constructor
 //		
-//		int intInput = -125;
+//		int intInput = 44;
 //		
 //		HugeInteger hugeass = new HugeInteger(intInput);
 //		
@@ -333,7 +356,7 @@ public class HugeInteger {
 //		for(int i=0; i<hugeass.intArr.length; i++) {
 //			System.out.println(hugeass.intArr[i]);
 //		}
-//		
+		
 
 		//test add by doing it to a hugeinteger already created
 		//eg add hugeass to hugey

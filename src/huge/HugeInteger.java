@@ -76,9 +76,7 @@ public class HugeInteger {
 	
 	
 	public HugeInteger(int n) throws ArithmeticException {
-		
-		//TODO: Theres 1 fail here
-		
+				
 		//used to create a hugeinteger from a random integer of size n
 	
 		//first create the random integer
@@ -87,16 +85,8 @@ public class HugeInteger {
 		//except for the final array element, which cannot be 0
 		//also randomize the +ve or -ve.
 		
-		//first check to see if you put in a valid number
-		
-		//trivial case if input length 0
-		if(n == 0) {
-			this.intArr = new int[0];
-			this.negative = false;
-			return;
-		}
-		//if less than 0 length
-		else if(n<0) {
+		//check to see if you put in a valid number
+		if(n<0) {
 			throw new ArithmeticException("A random integer can't have negative length.");
 		}
 		else if(n>100000) {
@@ -190,16 +180,13 @@ public class HugeInteger {
 			
 			//turn into a string to do some leading zero removal
 			String output = new String();
-			for(int i=this.intArr.length-1; i>=0; i--) {
-				output = output + this.intArr[i];
+			for(int i=sum.intArr.length-1; i>=0; i--) {
+				output = output + sum.intArr[i];
 			}
 			output = output.replaceFirst("^0+(?!$)", "");
 			
 			//initialize a new final array
 			HugeInteger sanitized = new HugeInteger(0,false,output.length());
-
-			
-			
 			
 			//copy string into a final array.
 			//convert string to chars
@@ -238,7 +225,7 @@ public class HugeInteger {
 		
 		//if both are negative
 		else {
-			//TODO: use positive addition for double negatives.
+			//use positive addition for double negatives.
 			//then just say negative = true.
 			return h;
 		}
@@ -317,40 +304,33 @@ public class HugeInteger {
 		//1
 		
 //		//test string constructor
-//		String strInput = "-0012";
+//		String strInput = "0012";
 //		
 //		HugeInteger hugey = new HugeInteger(strInput);
 //		
 //		System.out.println(hugey.negative);
-//		
-//		for(int i=0; i<hugey.intArr.length; i++) {
-//			System.out.println(hugey.intArr[i]);
-//		}
-//		
 //		System.out.println("heres the toString");
 //		System.out.println(hugey.toString());
-		
-		
-		
+//		
+//		
+//		
 //		//test int constructor
 //		
-//		int intInput = 44;
+//		int intInput = 3;
 //		
 //		HugeInteger hugeass = new HugeInteger(intInput);
 //		
 //		System.out.println(hugeass.negative);
+//		System.out.println("heres the toString too");
+//		System.out.println(hugeass.toString());
 //		
-//		for(int i=0; i<hugeass.intArr.length; i++) {
-//			System.out.println(hugeass.intArr[i]);
-//		}
-		
-
-		//test add by doing it to a hugeinteger already created
-		//eg add hugeass to hugey
-		
-		//hugey.add(hugeass);
-		//continue testing
-		
+//		
+//
+//		//test add by doing it to a hugeinteger already created
+//		//eg add hugeass to hugey
+//		HugeInteger Hugebruh = hugey.add(hugeass);
+//		System.out.println("heres the toString three");
+//		System.out.println(Hugebruh.toString());
 		
 		
 	}

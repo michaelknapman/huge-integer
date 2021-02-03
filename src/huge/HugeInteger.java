@@ -6,8 +6,6 @@ import java.util.concurrent.ThreadLocalRandom; //used for random
 
 public class HugeInteger {
 
-	//private char[] charArr; //array holding chars
-
 	private int[] intArr; //final array.
 	private boolean negative; //true if negative. false if positive.
 
@@ -89,9 +87,6 @@ public class HugeInteger {
 		if(n<0) {
 			throw new ArithmeticException("A random integer can't have negative length.");
 		}
-		else if(n>100000) {
-			throw new ArithmeticException("That is like way too long, above 100000 digits in length.");
-		}
 		else {
 			//Random true or false
 			this.negative = Math.random() < 0.5;
@@ -115,13 +110,13 @@ public class HugeInteger {
 		
 		//if less than 0 length
 		if(digits<0) {
-			throw new ArithmeticException("An integer can't have negative length.");
+			throw new ArithmeticException("An integer can't have negative length, additional constructor");
 		}
 		else if(digits>100000) {
-			throw new ArithmeticException("That is like way too long, above 100000 digits in length.");
+			throw new ArithmeticException("That is like way too long, above 100000 digits in length, additional constructor");
 		}
 		else if(value<0) {
-			throw new ArithmeticException("Value can't be negative. Use the boolean for that.");
+			throw new ArithmeticException("Value can't be negative. Use the boolean for that, additional constructor");
 		}
 		else {
 			this.negative = neg;
@@ -167,22 +162,39 @@ public class HugeInteger {
 			
 			//now do long addition with h
 			int carry = 0;
-			for(int i=0; i<h.intArr.length; i++) {
+			for(int i=0; i<sum.intArr.length; i++) {
 				
-				int intSum = sum.intArr[i] + h.intArr[i] + carry;
+				int intSum = carry;
+				
+				if(i < this.intArr.length) {
+					intSum = intSum + this.intArr[i];
+				}
+				if(i < h.intArr.length) {
+					intSum = intSum + h.intArr[i];
+				}
+				
+								
 				if(intSum >= 10) {
 					carry = 1;
 				}
+				else {
+					carry = 0;
+				}
+				
 				int remainder = intSum % 10;
 				
 				sum.intArr[i] = remainder;
 			}
 			
-			//turn into a string to do some leading zero removal
+			
+			
+			//now copy to string
 			String output = new String();
 			for(int i=sum.intArr.length-1; i>=0; i--) {
 				output = output + sum.intArr[i];
 			}
+
+			//do leading zero removal 
 			output = output.replaceFirst("^0+(?!$)", "");
 			
 			//initialize a new final array
@@ -199,7 +211,7 @@ public class HugeInteger {
 				sanitized.intArr[charArray.length-1-i] = charArray[i];
 			}
 			
-			//Notice that the numbers are still encoded,
+			//Notice that the numbers are still ascii encoded,
 			//eg 0 -> 48, 1 -> 49 etc.
 			//shift everything down by 48.
 			for(int i=0; i < sanitized.intArr.length; i++) {
@@ -208,23 +220,24 @@ public class HugeInteger {
 			
 			
 			return sanitized;
-			
-			//TODO: fix fails
 		}
 
 		//if this only is negative
 		else if(this.negative == true && h.negative == false){
 			; //deal with this in lab 2
+			//call subtract
 			return h;
 		}
 		//if h only is negative
 		else if(this.negative == false && h.negative == true ){
 			; //deal with this in lab 2
+			//call subtract
 			return h;
 		}
 		
 		//if both are negative
 		else {
+			; //deal with this in lab 2
 			//use positive addition for double negatives.
 			//then just say negative = true.
 			return h;
@@ -266,7 +279,29 @@ public class HugeInteger {
 		//returns 1 if this > h
 		//returns 0 if this == h
 		
-		return 5; //placeholder
+		//first compare lengths 
+		if(this.intArr.length < h.intArr.length){
+			return -1;
+		}
+		else if(this.intArr.length > h.intArr.length) {
+			return 1;
+		}
+		else {
+			//they are same length, check the different values.
+			for(int i=0; i<this.intArr.length; i++) {
+				if(this.intArr[i] < h.intArr[i]) {
+					return -1;
+				}
+				else if(this.intArr[i] > h.intArr[i]) {
+					return 1;
+				}
+				else {
+					;
+				}
+			}
+		}
+		
+		return 0;
 	}
 		
 	public String toString() {
@@ -290,6 +325,16 @@ public class HugeInteger {
 				
 		return out; 
 	}
+	
+	//additional method, get negative since its private
+	public Boolean getNegative() {
+		if(this.negative == true) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 		
 	
 	public static void main(String[] args) {
@@ -303,8 +348,8 @@ public class HugeInteger {
 		//2
 		//1
 		
-//		//test string constructor
-//		String strInput = "0012";
+		//test string constructor
+//		String strInput = "9999";
 //		
 //		HugeInteger hugey = new HugeInteger(strInput);
 //		
@@ -313,22 +358,30 @@ public class HugeInteger {
 //		System.out.println(hugey.toString());
 //		
 //		
+//		String bruv = "9999";
 //		
-//		//test int constructor
+//		HugeInteger ayy = new HugeInteger(bruv);
 //		
-//		int intInput = 3;
+//		System.out.println(ayy.negative);
+//		System.out.println("heres the toString");
+//		System.out.println(ayy.toString());
 //		
-//		HugeInteger hugeass = new HugeInteger(intInput);
 //		
-//		System.out.println(hugeass.negative);
-//		System.out.println("heres the toString too");
-//		System.out.println(hugeass.toString());
-//		
+////		//test int constructor
+////		
+////		int intInput = 4;
+////		
+////		HugeInteger hugeass = new HugeInteger(intInput);
+////		
+////		System.out.println(hugeass.negative);
+////		System.out.println("heres the toString too");
+////		System.out.println(hugeass.toString());
+////		
 //		
 //
 //		//test add by doing it to a hugeinteger already created
 //		//eg add hugeass to hugey
-//		HugeInteger Hugebruh = hugey.add(hugeass);
+//		HugeInteger Hugebruh = hugey.add(ayy);
 //		System.out.println("heres the toString three");
 //		System.out.println(Hugebruh.toString());
 		

@@ -87,7 +87,7 @@ public class HugeInteger {
 		if(n<0) {
 			throw new ArithmeticException("A random integer can't have negative length.");
 		}
-		else {
+		else {	
 			//Random true or false
 			this.negative = Math.random() < 0.5;
 			
@@ -111,9 +111,6 @@ public class HugeInteger {
 		//if less than 0 length
 		if(digits<0) {
 			throw new ArithmeticException("An integer can't have negative length, additional constructor");
-		}
-		else if(digits>100000) {
-			throw new ArithmeticException("That is like way too long, above 100000 digits in length, additional constructor");
 		}
 		else if(value<0) {
 			throw new ArithmeticException("Value can't be negative. Use the boolean for that, additional constructor");
@@ -150,10 +147,6 @@ public class HugeInteger {
 			
 			//initialize a large sum array with allowance for overflow
 			HugeInteger sum = new HugeInteger(0,false,arrMax+1);
-
-			//This is positive only.
-			sum.negative = this.negative;
-			
 			
 			//copy this into sum
 			for(int i=0; i<this.intArr.length; i++) {
@@ -181,9 +174,8 @@ public class HugeInteger {
 					carry = 0;
 				}
 				
-				int remainder = intSum % 10;
-				
-				sum.intArr[i] = remainder;
+				//remainder
+				sum.intArr[i] = intSum % 10;
 			}
 			
 			
@@ -205,7 +197,7 @@ public class HugeInteger {
 			char[] charArray = new char[output.length()]; //initialize
 			output.getChars(0, output.length(), charArray, 0);
 			
-			//now we can copy our stuff to an int array.
+			//now we can copy our stuff to a new sanitized HugeInteger
 			sanitized.intArr = new int[charArray.length]; //initialize
 			for(int i=0; i < charArray.length; i++) {
 				sanitized.intArr[charArray.length-1-i] = charArray[i];

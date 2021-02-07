@@ -137,6 +137,16 @@ public class HugeInteger {
 		//have the sum array be 1 bigger than the bigger of the two
 		//then make another final array, with no unwanted empty spaces. 
 		
+		
+		
+		
+		//TODO: instead of doing 4 cases, just do 2
+		//if signs are equal, just add regularly, keep sign
+		//if signs are unequal, add weirdly, determine sign
+		
+		
+		
+		
 		//if none are negative
 		if(this.negative == false && h.negative == false) {
 			
@@ -271,28 +281,59 @@ public class HugeInteger {
 		//returns 1 if this > h
 		//returns 0 if this == h
 		
-		//first compare lengths 
-		if(this.intArr.length < h.intArr.length){
-			return -1;
-		}
-		else if(this.intArr.length > h.intArr.length) {
+		//first compare signs
+		if(this.negative == false && h.negative == true) {
 			return 1;
 		}
-		else {
-			//they are same length, check the different values.
-			for(int i=0; i<this.intArr.length; i++) {
-				if(this.intArr[i] < h.intArr[i]) {
-					return -1;
-				}
-				else if(this.intArr[i] > h.intArr[i]) {
-					return 1;
-				}
-				else {
-					;
+		else if(this.negative == true && h.negative == false) {
+			return -1;
+		}
+		else if(this.negative == false && h.negative == false) {
+			//now compare lengths 
+			if(this.intArr.length < h.intArr.length){
+				return -1;
+			}
+			else if(this.intArr.length > h.intArr.length) {
+				return 1;
+			}
+			else { //this.intArr.length == h.intArr.length
+				//they are same length, check the magnitudes
+				for(int i=this.intArr.length-1; i>=0; i--) {
+					if(this.intArr[i] < h.intArr[i]) {
+						return -1;
+					}
+					else if(this.intArr[i] > h.intArr[i]) {
+						return 1;
+					}
+					else {
+						;
+					}
 				}
 			}
 		}
-		
+		else { //both negative
+			//now compare lengths 
+			if(this.intArr.length < h.intArr.length){
+				return 1;
+			}
+			else if(this.intArr.length > h.intArr.length) {
+				return -1;
+			}
+			else {
+				//they are same length, check the magnitudes
+				for(int i=this.intArr.length-1; i>=0; i--) {
+					if(this.intArr[i] < h.intArr[i]) {
+						return 1;
+					}
+					else if(this.intArr[i] > h.intArr[i]) {
+						return -1;
+					}
+					else {
+						;
+					}
+				}
+			}
+		}
 		return 0;
 	}
 		

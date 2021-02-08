@@ -137,22 +137,10 @@ public class HugeInteger {
 		//have the sum array be 1 bigger than the bigger of the two
 		//then make another final array, with no unwanted empty spaces. 
 		
-		
-		
-		
-		//TODO: instead of doing 4 cases, just do 2
-		//if signs are equal, just add regularly, keep sign
-		//if signs are unequal, add weirdly, determine sign
-		
-		
-		
-		
-		//if none are negative
-		if(this.negative == false && h.negative == false) {
+		//if signs are equal.
+		if((this.negative == false && h.negative == false) || (this.negative == true && h.negative == true)) {
 			
-			//dont need to have cases for which one is bigger.
-			//just detect the size of the biggest, and make the sum
-			//array one bigger.
+			//find the largest magnitude length
 			int arrMax = Math.max(this.intArr.length, h.intArr.length);
 			
 			//initialize a large sum array with allowance for overflow
@@ -220,29 +208,92 @@ public class HugeInteger {
 				sanitized.intArr[i] = sanitized.intArr[i] - 48;
 			}
 			
+			//finally set the negative to the proper value
+			sanitized.negative = this.negative;
 			
 			return sanitized;
 		}
-
-		//if this only is negative
-		else if(this.negative == true && h.negative == false){
-			; //deal with this in lab 2
-			//call subtract
-			return h;
-		}
-		//if h only is negative
-		else if(this.negative == false && h.negative == true ){
-			; //deal with this in lab 2
-			//call subtract
-			return h;
-		}
 		
-		//if both are negative
-		else {
-			; //deal with this in lab 2
-			//use positive addition for double negatives.
-			//then just say negative = true.
-			return h;
+		
+		else { //if different sign
+			
+			//find the biggest magnitude length
+			int arrMax = Math.max(this.intArr.length, h.intArr.length);
+			
+			//initialize a large sum array with allowance for overflow
+			HugeInteger sum = new HugeInteger(0,false,arrMax+1);
+			
+			//copy this into sum
+			for(int i=0; i<this.intArr.length; i++) {
+				sum.intArr[i] = this.intArr[i];
+			}
+			
+			//now do long subtraction with h
+			int carrydown = 0;
+			for(int i=0; i<sum.intArr.length; i++) {
+				
+				int elemInt = carrydown;
+				
+				if(i < this.intArr.length) {
+					elemInt = elemInt + this.intArr[i];
+				}
+				if(i < h.intArr.length) {
+					elemInt = elemInt - h.intArr[i];
+				}
+				
+								
+				if(elemInt < 0) {
+					carrydown = -1;
+					elemInt = elemInt + 10;
+				}
+				else {
+					carrydown = 0;
+				}
+				
+				sum.intArr[i] = elemInt;
+				
+			}
+			
+			//TODO: account for big subtractions causing negative flips.
+			
+			
+			
+			//TODO: account for turning -0 to 0
+			
+			//now copy to string
+			String output = new String();
+			for(int i=sum.intArr.length-1; i>=0; i--) {
+				output = output + sum.intArr[i];
+			}
+
+			//do leading zero removal 
+			output = output.replaceFirst("^0+(?!$)", "");
+			
+			//initialize a new final array
+			HugeInteger sanitized = new HugeInteger(0,false,output.length());
+			
+			//copy string into a final array.
+			//convert string to chars
+			char[] charArray = new char[output.length()]; //initialize
+			output.getChars(0, output.length(), charArray, 0);
+			
+			//now we can copy our stuff to a new sanitized HugeInteger
+			sanitized.intArr = new int[charArray.length]; //initialize
+			for(int i=0; i < charArray.length; i++) {
+				sanitized.intArr[charArray.length-1-i] = charArray[i];
+			}
+			
+			//Notice that the numbers are still ascii encoded,
+			//eg 0 -> 48, 1 -> 49 etc.
+			//shift everything down by 48.
+			for(int i=0; i < sanitized.intArr.length; i++) {
+				sanitized.intArr[i] = sanitized.intArr[i] - 48;
+			}
+			
+			//finally set the negative to the proper value
+			sanitized.negative = this.negative;
+			
+			return sanitized;
 		}
 		
 
@@ -253,6 +304,28 @@ public class HugeInteger {
 		//if its two negative numbers, just call add LOL
 		
 		//returns this - h
+		
+		
+		//pos - neg, call add
+		if(this.negative == false && h.negative == true) {
+			h.negative = false;
+			return this.add(h);
+		}
+				
+				
+		if(this.negative == true && h.negative == false) {
+			h.negative = true;
+			return this.add(h);
+		}
+		
+		
+		else {
+			
+		}
+		
+		
+		
+		
 		return h; //placeholder
 	}
 	

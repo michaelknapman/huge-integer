@@ -8,12 +8,10 @@ public class HugeInteger {
 
 	private int[] intArr; //final array.
 	private boolean negative; //true if negative. false if positive.
-
 	
-	//constructors
+	/*constructors ----------------------------------------------*/
 	public HugeInteger(String val) throws ArithmeticException {
 		
-
 		//first handle leading negative and remove it if it exists
 		String newval = "";
 		if(val.charAt(0) == '-') {
@@ -33,18 +31,10 @@ public class HugeInteger {
 			throw new ArithmeticException("There are characters other than 0 to 9");
 		}
 				
-		
 		//Trivial case if input "0" and "-0".
 		if(newval.matches("^[0]")) {
 			this.negative = false;
-		}
-		//these trivial cases handles 0 and -0 and 0000 and -0000
-		//by turning it all into "0", this.negative = false.
-		//then it goes through the constructor normally.
-		
-
-		
-		//now turn processed string into huge integer.
+		} 		//trivial case handles 0 and -0 and 0000 and -0000
 		
 		//convert string to chars
 		char[] charArr = new char[newval.length()]; //initialize
@@ -56,8 +46,6 @@ public class HugeInteger {
 			this.intArr[charArr.length-1-i] = charArr[i];
 		}
 		
-		
-		
 		//Notice that the numbers are still encoded,
 		//eg 0 -> 48, 1 -> 49 etc.
 		//shift everything down by 48.
@@ -65,23 +53,10 @@ public class HugeInteger {
 			this.intArr[i] = this.intArr[i] - 48;
 		}
 		
-		//now we have a sanitized HugeInteger in intArr.
-		//they are of type integer which means you can do
-		//arithmetic operations
-		
-		
 	}
 	
 	
 	public HugeInteger(int n) throws ArithmeticException {
-				
-		//used to create a hugeinteger from a random integer of size n
-	
-		//first create the random integer
-		//due to the possibility of being supplied n = 10000, int wont work
-		//we need to directly randomize each array element
-		//except for the final array element, which cannot be 0
-		//also randomize the +ve or -ve.
 		
 		//check to see if you put in a valid number
 		if(n<0) {
@@ -105,7 +80,6 @@ public class HugeInteger {
 	
 	//constructor required for add and other stuff
 	//usually used for an array of zeroes of some digits length.
-	//but you can fill with anything!
 	public HugeInteger(int value, boolean neg, int digits) throws ArithmeticException {
 		
 		//if less than 0 length
@@ -130,15 +104,32 @@ public class HugeInteger {
 	
 	public HugeInteger add(HugeInteger h) {
 		
-		//basically just use long addition with carry overs
-		//starting in ones place and going to millionths etc
+//		//trivial case when both are 0
+//		if(this.intArr.length == 1 && h.intArr.length == 1 && this.intArr[0] == 0 && h.intArr[0] == 0) {
+//			this.negative = false;
+//			return this;
+//		}
+//		//trivial case when this is 0
+//		if(this.intArr.length == 1 && this.intArr[0] == 0) {
+//			return h;
+//		}
+//		//trivial case when h is 0
+//		else if(h.intArr.length == 1 && this.intArr[0] == 0) {
+//			return this;
+//		}
+
 		
-		//what if this + h makes a bigger array?
-		//have the sum array be 1 bigger than the bigger of the two
-		//then make another final array, with no unwanted empty spaces. 
+		//trivial cases. if different sign, flip sign and call subtract.
+		if(this.negative == false && h.negative == true){ 
+			h.negative = false;
+			return this.subtract(h);
+		}
+		else if(this.negative == true && h.negative == false) {
+			h.negative = true;
+			return this.subtract(h);
+		}
 		
-		//if signs are equal.
-		if((this.negative == false && h.negative == false) || (this.negative == true && h.negative == true)) {
+		else { 	//if signs are equal.
 			
 			//find the largest magnitude length
 			int arrMax = Math.max(this.intArr.length, h.intArr.length);
@@ -176,8 +167,6 @@ public class HugeInteger {
 				sum.intArr[i] = intSum % 10;
 			}
 			
-			
-			
 			//now copy to string
 			String output = new String();
 			for(int i=sum.intArr.length-1; i>=0; i--) {
@@ -210,25 +199,82 @@ public class HugeInteger {
 			
 			//finally set the negative to the proper value
 			sanitized.negative = this.negative;
-			
+						
 			return sanitized;
 		}
 		
+
 		
-		else { //if different sign
+
+	}
+	
+	public HugeInteger subtract(HugeInteger h) {
+		
+//		//trivial case when both are 0
+//		if(this.intArr.length == 1 && h.intArr.length == 1 && this.intArr[0] == 0 && h.intArr[0] == 0) {
+//			this.negative = false;
+//			return this;
+//		}
+//		//trivial case when this is 0
+//		else if(this.intArr.length == 1 && this.intArr[0] == 0) {
+//			h.negative = !h.negative;
+//			return h;
+//		}
+//		//trivial case when h is 0
+//		else if(h.intArr.length == 1 && this.intArr[0] == 0) {
+//			this.negative = !this.negative;
+//			return this;
+//		}
+		
+		//trivial cases. if different sign, flip sign and call add.
+		if(this.negative == false && h.negative == true) {
+			h.negative = false;
+			return this.add(h);
+		}
+		else if(this.negative == true && h.negative == false) {
+			h.negative = true;
+			return this.add(h);
+		}
+		
+		
+		
+		//find which has bigger magnitude: this or h.
+		boolean thisbiggerorequal = true;
+		if(this.intArr.length > h.intArr.length) {
+			thisbiggerorequal = true;
+		}
+		else if(this.intArr.length < h.intArr.length) {
+			thisbiggerorequal = false;
+		}
+		else { //same length
+			//loop, if everything is equal then its true.
+			for(int i=this.intArr.length-1;i>=0;i--) {
+				if(this.intArr[i] > h.intArr[i]) {
+					thisbiggerorequal = true;
+					break;
+				}
+				else if(this.intArr[i] < h.intArr[i]) {
+					thisbiggerorequal = false;
+					break;
+				}
+				else { //if this.intArr[i] == h.intArr[i]
+					;//continue looping
+				}
+			}
+		}
+		
+		//if this>=h then do this-h
+		if(thisbiggerorequal == true) {
 			
-			//find the biggest magnitude length
-			int arrMax = Math.max(this.intArr.length, h.intArr.length);
-			
-			//initialize a large sum array with allowance for overflow
-			HugeInteger sum = new HugeInteger(0,false,arrMax+1);
-			
+			//initialize a sum. we will trim it down later
+			HugeInteger sum = new HugeInteger(0,this.negative,this.intArr.length+1);
+
 			//copy this into sum
 			for(int i=0; i<this.intArr.length; i++) {
 				sum.intArr[i] = this.intArr[i];
 			}
 			
-			//now do long subtraction with h
+			//now do long subtraction
 			int carrydown = 0;
 			for(int i=0; i<sum.intArr.length; i++) {
 				
@@ -241,7 +287,6 @@ public class HugeInteger {
 					elemInt = elemInt - h.intArr[i];
 				}
 				
-								
 				if(elemInt < 0) {
 					carrydown = -1;
 					elemInt = elemInt + 10;
@@ -251,14 +296,7 @@ public class HugeInteger {
 				}
 				
 				sum.intArr[i] = elemInt;
-				
 			}
-			
-			//TODO: account for big subtractions causing negative flips.
-			
-			
-			
-			//TODO: account for turning -0 to 0
 			
 			//now copy to string
 			String output = new String();
@@ -268,6 +306,88 @@ public class HugeInteger {
 
 			//do leading zero removal 
 			output = output.replaceFirst("^0+(?!$)", "");
+			
+			
+			//Trivial case if output is -0 or 0
+			if(output.matches("^[0]")) {
+				this.negative = false;
+			}
+			
+			//initialize a new final array
+			HugeInteger sanitized = new HugeInteger(0,false,output.length());
+			
+			//copy string into a final array.
+			//convert string to chars
+			char[] charArray = new char[output.length()]; //initialize
+			output.getChars(0, output.length(), charArray, 0);
+			
+			//now we can copy our stuff to a new sanitized HugeInteger
+			sanitized.intArr = new int[charArray.length]; //initialize
+			for(int i=0; i < charArray.length; i++) {
+				sanitized.intArr[charArray.length-1-i] = charArray[i];
+			}
+			
+			//Notice that the numbers are still ascii encoded,
+			//eg 0 -> 48, 1 -> 49 etc.
+			//shift everything down by 48.
+			for(int i=0; i < sanitized.intArr.length; i++) {
+				sanitized.intArr[i] = sanitized.intArr[i] - 48;
+			}
+			
+			//finally set the negative to the proper value
+			sanitized.negative = this.negative;
+			
+			return sanitized;
+			
+		}
+		//if this<h then do -(h-this) to avoid having to deal with subtracting a larger number
+		else {
+			//initialize a sum. we will trim it down later
+			HugeInteger sum = new HugeInteger(0,!h.negative,h.intArr.length+1);
+			
+			//copy h into sum
+			for(int i=0; i<h.intArr.length; i++) {
+				h.intArr[i] = h.intArr[i];
+			}
+			
+			//now do long subtraction
+			int carrydown = 0;
+			for(int i=0; i<sum.intArr.length; i++) {
+				
+				int elemInt = carrydown;
+				
+				if(i < h.intArr.length) {
+					elemInt = elemInt + h.intArr[i];
+				}
+				if(i <this.intArr.length) {
+					elemInt = elemInt - this.intArr[i];
+				}
+				
+				if(elemInt < 0) {
+					carrydown = -1;
+					elemInt = elemInt + 10;
+				}
+				else {
+					carrydown = 0;
+				}
+				
+				sum.intArr[i] = elemInt;
+			}
+			
+			//now copy to string
+			String output = new String();
+			for(int i=sum.intArr.length-1; i>=0; i--) {
+				output = output + sum.intArr[i];
+			}
+
+			//do leading zero removal 
+			output = output.replaceFirst("^0+(?!$)", "");
+			
+			
+			//Trivial case if output is -0 or 0
+			if(output.matches("^[0]")) {
+				this.negative = false;
+			}
 			
 			//initialize a new final array
 			HugeInteger sanitized = new HugeInteger(0,false,output.length());
@@ -295,56 +415,116 @@ public class HugeInteger {
 			
 			return sanitized;
 		}
+
+
 		
 
-	}
-	
-	public HugeInteger subtract(HugeInteger h) {
-		
-		//if its two negative numbers, just call add LOL
-		
-		//returns this - h
-		
-		
-		//pos - neg, call add
-		if(this.negative == false && h.negative == true) {
-			h.negative = false;
-			return this.add(h);
-		}
-				
-				
-		if(this.negative == true && h.negative == false) {
-			h.negative = true;
-			return this.add(h);
-		}
-		
-		
-		else {
-			
-		}
-		
-		
-		
-		
-		return h; //placeholder
+//		else {
+//			//find the biggest magnitude length
+//			int arrMax = Math.max(this.intArr.length, h.intArr.length);
+//			
+//			//initialize a large sum array with allowance for overflow
+//			HugeInteger sum = new HugeInteger(0,false,arrMax+1);
+//			
+//			//copy this into sum
+//			for(int i=0; i<this.intArr.length; i++) {
+//				sum.intArr[i] = this.intArr[i];
+//			}
+//			
+//			//now do long subtraction with h
+//			int carrydown = 0;
+//			for(int i=0; i<sum.intArr.length; i++) {
+//				
+//				int elemInt = carrydown;
+//				
+//				if(i < this.intArr.length) {
+//					elemInt = elemInt + this.intArr[i];
+//				}
+//				if(i < h.intArr.length) {
+//					elemInt = elemInt - h.intArr[i];
+//				}
+//				
+//								
+//				if(elemInt < 0) {
+//					carrydown = -1;
+//					elemInt = elemInt + 10;
+//				}
+//				else {
+//					carrydown = 0;
+//				}
+//				
+//				sum.intArr[i] = elemInt;
+//				
+//			}
+//			
+//			
+//			
+//			//now copy to string
+//			String output = new String();
+//			for(int i=sum.intArr.length-1; i>=0; i--) {
+//				output = output + sum.intArr[i];
+//			}
+//
+//			//do leading zero removal 
+//			output = output.replaceFirst("^0+(?!$)", "");
+//			
+//			
+//			//Trivial case if output is -0 or 0
+//			if(output.matches("^[0]")) {
+//				this.negative = false;
+//			}
+//			
+//			//initialize a new final array
+//			HugeInteger sanitized = new HugeInteger(0,false,output.length());
+//			
+//			//copy string into a final array.
+//			//convert string to chars
+//			char[] charArray = new char[output.length()]; //initialize
+//			output.getChars(0, output.length(), charArray, 0);
+//			
+//			//now we can copy our stuff to a new sanitized HugeInteger
+//			sanitized.intArr = new int[charArray.length]; //initialize
+//			for(int i=0; i < charArray.length; i++) {
+//				sanitized.intArr[charArray.length-1-i] = charArray[i];
+//			}
+//			
+//			//Notice that the numbers are still ascii encoded,
+//			//eg 0 -> 48, 1 -> 49 etc.
+//			//shift everything down by 48.
+//			for(int i=0; i < sanitized.intArr.length; i++) {
+//				sanitized.intArr[i] = sanitized.intArr[i] - 48;
+//			}
+//			
+//			//finally set the negative to the proper value
+//			sanitized.negative = this.negative;
+//			
+//			return sanitized;
+//		}
 	}
 	
 	public HugeInteger multiply(HugeInteger h) {
 		
+		//sum length = this lenght + h length.
 		
-		//add total number of digits together 
-		//this.length * h.length
-		//to make the length of the new array
-		//it might be a bit too big
-		//eg 99 x 100 means 9900 not ***** long.
-		//long multiplication 
 		
-		//you will have to make an array for every addition
-		//in long multiplication
-		//huge!
-		//or use Karatsuba algorithm
 		
-		//returns product of this * h
+		
+		//first handle negatives
+		if(this.negative == h.negative) {
+			//negative is false
+		}
+		else {
+			//negative is true
+		}
+		
+		
+		
+		
+		//use karatsuba
+		
+		
+
+		
 		return h; //placeholder
 	}
 		
@@ -473,16 +653,16 @@ public class HugeInteger {
 //		System.out.println(ayy.toString());
 //		
 //		
-////		//test int constructor
-////		
-////		int intInput = 4;
-////		
-////		HugeInteger hugeass = new HugeInteger(intInput);
-////		
-////		System.out.println(hugeass.negative);
-////		System.out.println("heres the toString too");
-////		System.out.println(hugeass.toString());
-////		
+//		//test int constructor
+//		
+//		int intInput = 4;
+//		
+//		HugeInteger hugeass = new HugeInteger(intInput);
+//		
+//		System.out.println(hugeass.negative);
+//		System.out.println("heres the toString too");
+//		System.out.println(hugeass.toString());
+//		
 //		
 //
 //		//test add by doing it to a hugeinteger already created

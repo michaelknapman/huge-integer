@@ -64,24 +64,6 @@ public class MKTestHugeInteger {
 		testPositiveAdd("1", "0", "1", false);
 		testPositiveAdd("0", "1", "1", false);
 		testPositiveAdd("0", "0", "0", false);
-
-		//mixed adds
-		
-		//negative add
-		
-		//positive subtract
-		
-		//mixed subtract
-		
-		//negative subtract
-		
-		//positive multiplication
-		
-		//mixed multiplication
-		
-		//negative multiplication
-		
-		//compareTo
 		
 	}
 

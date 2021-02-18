@@ -104,19 +104,19 @@ public class HugeInteger {
 	
 	public HugeInteger add(HugeInteger h) {
 		
-//		//trivial case when both are 0
-//		if(this.intArr.length == 1 && h.intArr.length == 1 && this.intArr[0] == 0 && h.intArr[0] == 0) {
-//			this.negative = false;
-//			return this;
-//		}
-//		//trivial case when this is 0
-//		if(this.intArr.length == 1 && this.intArr[0] == 0) {
-//			return h;
-//		}
-//		//trivial case when h is 0
-//		else if(h.intArr.length == 1 && this.intArr[0] == 0) {
-//			return this;
-//		}
+		//trivial case when both are 0
+		if(this.intArr.length == 1 && h.intArr.length == 1 && this.intArr[0] == 0 && h.intArr[0] == 0) {
+			this.negative = false;
+			return this;
+		}
+		//trivial case when this is 0
+		if(this.intArr.length == 1 && this.intArr[0] == 0) {
+			return h;
+		}
+		//trivial case when h is 0
+		else if(h.intArr.length == 1 && h.intArr[0] == 0) {
+			return this;
+		}
 
 		
 		//trivial cases. if different sign, flip sign and call subtract.
@@ -210,21 +210,20 @@ public class HugeInteger {
 	
 	public HugeInteger subtract(HugeInteger h) {
 		
-//		//trivial case when both are 0
-//		if(this.intArr.length == 1 && h.intArr.length == 1 && this.intArr[0] == 0 && h.intArr[0] == 0) {
-//			this.negative = false;
-//			return this;
-//		}
-//		//trivial case when this is 0
-//		else if(this.intArr.length == 1 && this.intArr[0] == 0) {
-//			h.negative = !h.negative;
-//			return h;
-//		}
-//		//trivial case when h is 0
-//		else if(h.intArr.length == 1 && this.intArr[0] == 0) {
-//			this.negative = !this.negative;
-//			return this;
-//		}
+		//trivial case when both are 0
+		if(this.intArr.length == 1 && h.intArr.length == 1 && this.intArr[0] == 0 && h.intArr[0] == 0) {
+			this.negative = false;
+			return this;
+		}
+		//trivial case when this is 0
+		else if(this.intArr.length == 1 && this.intArr[0] == 0) {
+			h.negative = !h.negative;
+			return h;
+		}
+		//trivial case when h is 0
+		else if(h.intArr.length == 1 && h.intArr[0] == 0) {
+			return this;
+		}
 		
 		//trivial cases. if different sign, flip sign and call add.
 		if(this.negative == false && h.negative == true) {
@@ -411,121 +410,67 @@ public class HugeInteger {
 			}
 			
 			//finally set the negative to the proper value
-			sanitized.negative = this.negative;
+			sanitized.negative = !this.negative;
 			
 			return sanitized;
 		}
 
-
-		
-
-//		else {
-//			//find the biggest magnitude length
-//			int arrMax = Math.max(this.intArr.length, h.intArr.length);
-//			
-//			//initialize a large sum array with allowance for overflow
-//			HugeInteger sum = new HugeInteger(0,false,arrMax+1);
-//			
-//			//copy this into sum
-//			for(int i=0; i<this.intArr.length; i++) {
-//				sum.intArr[i] = this.intArr[i];
-//			}
-//			
-//			//now do long subtraction with h
-//			int carrydown = 0;
-//			for(int i=0; i<sum.intArr.length; i++) {
-//				
-//				int elemInt = carrydown;
-//				
-//				if(i < this.intArr.length) {
-//					elemInt = elemInt + this.intArr[i];
-//				}
-//				if(i < h.intArr.length) {
-//					elemInt = elemInt - h.intArr[i];
-//				}
-//				
-//								
-//				if(elemInt < 0) {
-//					carrydown = -1;
-//					elemInt = elemInt + 10;
-//				}
-//				else {
-//					carrydown = 0;
-//				}
-//				
-//				sum.intArr[i] = elemInt;
-//				
-//			}
-//			
-//			
-//			
-//			//now copy to string
-//			String output = new String();
-//			for(int i=sum.intArr.length-1; i>=0; i--) {
-//				output = output + sum.intArr[i];
-//			}
-//
-//			//do leading zero removal 
-//			output = output.replaceFirst("^0+(?!$)", "");
-//			
-//			
-//			//Trivial case if output is -0 or 0
-//			if(output.matches("^[0]")) {
-//				this.negative = false;
-//			}
-//			
-//			//initialize a new final array
-//			HugeInteger sanitized = new HugeInteger(0,false,output.length());
-//			
-//			//copy string into a final array.
-//			//convert string to chars
-//			char[] charArray = new char[output.length()]; //initialize
-//			output.getChars(0, output.length(), charArray, 0);
-//			
-//			//now we can copy our stuff to a new sanitized HugeInteger
-//			sanitized.intArr = new int[charArray.length]; //initialize
-//			for(int i=0; i < charArray.length; i++) {
-//				sanitized.intArr[charArray.length-1-i] = charArray[i];
-//			}
-//			
-//			//Notice that the numbers are still ascii encoded,
-//			//eg 0 -> 48, 1 -> 49 etc.
-//			//shift everything down by 48.
-//			for(int i=0; i < sanitized.intArr.length; i++) {
-//				sanitized.intArr[i] = sanitized.intArr[i] - 48;
-//			}
-//			
-//			//finally set the negative to the proper value
-//			sanitized.negative = this.negative;
-//			
-//			return sanitized;
-//		}
 	}
 	
 	public HugeInteger multiply(HugeInteger h) {
 		
-		//sum length = this lenght + h length.
+
+		//trivial case, multiply by zero
+		if(this.intArr.length == 1 && this.intArr[0] == 0 ) {
+			this.negative = false;
+			return this;
+		}
+		if(h.intArr.length == 1 && h.intArr[0] == 0) {
+			h.negative = false; 
+			return h;
+		}
 		
+		//sum length = this length + h length in worst case.
+		HugeInteger sum = new HugeInteger(0,false,this.intArr.length+h.intArr.length);
 		
-		
-		
-		//first handle negatives
+		//handle negatives
 		if(this.negative == h.negative) {
-			//negative is false
+			sum.negative = false;
 		}
 		else {
-			//negative is true
+			sum.negative = true;
 		}
+
+		//TODO: call karatsuba
 		
-		
-		
-		
-		//use karatsuba
-		
+
 		
 
 		
 		return h; //placeholder
+	}
+	
+	public long karatsuba(HugeInteger this, HugeInteger h) {
+		
+		int maxlength = Math.max(this.intArr.length, h.intArr.length);
+		
+		if(maxlength<2) {
+			return this.intArr[0] * h.intArr[0];
+		}
+		
+		maxlength = (maxlength / 2) + (maxlength % 2);
+		
+//		long b = this >> maxlength;
+//		long a = this - (b << maxlength);
+//		long d = h >> maxlength;
+//		long c = h - (d << maxlength);
+//		
+//		long ac = karatsuba(a,c);
+//		long bd = karatsuba(b,d);
+//		long abcd = karatsuba(a + b,c + d);
+		
+		
+		return 5; // ac + (abcd - ac - bd << m) + (bd << 2 * m);
 	}
 		
 	public int compareTo(HugeInteger h) {

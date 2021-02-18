@@ -38,7 +38,7 @@ public class TestHugeInteger2 {
     // when test failed, the size of number <= NUM_DISPLAY, display the number
     public static final int NUM_DISPLAY = 1000;
     // iterate the MAX_SIZE_ARRAY MAX_RUN times
-    public static final int MAX_RUN = 50;
+    public static final int MAX_RUN = 20; // used to be 50
     // use for generating invalid string for constructor 1 (with string input)
     public static final int MAX_INVALID_STRING = 5;
     // different size for test

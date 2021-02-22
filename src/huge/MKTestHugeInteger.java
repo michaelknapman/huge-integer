@@ -29,7 +29,7 @@ public class MKTestHugeInteger {
 			HugeInteger a = new HugeInteger(tester1);
 			HugeInteger b = new HugeInteger(tester2);
 			HugeInteger c = a.add(b);
-			if(c.toString().equals(answer) && a.getNegative() == false) {
+			if(c.toString().equals(answer) && c.getNegative() == false) {
 				System.out.println("Success at " + tester1 + " and " + tester2);
 			}
 			else {

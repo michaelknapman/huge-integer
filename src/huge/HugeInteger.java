@@ -441,7 +441,11 @@ public class HugeInteger {
 			sum.negative = true;
 		}
 
-		//TODO: call karatsuba
+		
+		
+		//basically, split the hugeinteger into two hugeintegers.
+		//then do the ac, bd operations and stuff
+		//TODO: call karatsuba??
 		
 
 		

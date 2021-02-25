@@ -105,7 +105,7 @@ public class MKTestHugeInteger2 {
 		testCompareTo("0","-0",0,false);
 		
 		//multiplication
-		
+		testMultiply("0","-0","0",false,false);
 
 		
 	}

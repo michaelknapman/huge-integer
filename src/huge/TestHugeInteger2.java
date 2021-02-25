@@ -38,11 +38,11 @@ public class TestHugeInteger2 {
     // when test failed, the size of number <= NUM_DISPLAY, display the number
     public static final int NUM_DISPLAY = 1000;
     // iterate the MAX_SIZE_ARRAY MAX_RUN times
-    public static final int MAX_RUN = 20; // used to be 50
+    public static final int MAX_RUN = 30; // used to be 50 tests
     // use for generating invalid string for constructor 1 (with string input)
     public static final int MAX_INVALID_STRING = 5;
     // different size for test
-    public static final int[] MAX_SIZE_ARRAY = new int[] {1,20,50,500,5000};
+    public static final int[] MAX_SIZE_ARRAY = new int[] {1,20,50,500,3000}; //last one should be 5000 but it takes too long on my computer
 
     public static void main(String args[]){
         double totalMark = 0;

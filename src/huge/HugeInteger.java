@@ -9,6 +9,8 @@ public class HugeInteger {
 	private int[] intArr; //final array.
 	private boolean negative; //true if negative. false if positive.
 	
+	
+	
 	/*constructors ----------------------------------------------*/
 	public HugeInteger(String val) throws ArithmeticException {
 		
@@ -430,7 +432,7 @@ public class HugeInteger {
 			//use both an index and a counter
 			for(int i=0; i<this.intArr.length; i++, counter++) {
 				int carry = 0;
-				//also init a hugeinteger to contain the things you have to add together
+				//also init a hugeinteger to contain the thing you have to add together
 				HugeInteger sub_prod = new HugeInteger(0,false,counter + h.intArr.length + 1);
 				
 				//now loop to create all of your things to add together.
@@ -527,7 +529,6 @@ public class HugeInteger {
 		//than half of h's length 
 		//this is so that when you do length-N, there isnt an indexoutofbounds
 		HugeInteger b = new HugeInteger(0,false,1);
-		b.intArr[0]=0;
 		HugeInteger a = this;
 		
 		//turn b to be x/10^N when this's length > N
@@ -546,7 +547,6 @@ public class HugeInteger {
 		//initialize d and c to use when h's length < this's length and 
 		//it is < half of this's length
 		HugeInteger d = new HugeInteger(0,false,1);
-		d.intArr[0] = 0;
 		HugeInteger c = h;
 		
 		//turn d to be x/10^NN when h's length > N
@@ -636,7 +636,7 @@ public class HugeInteger {
 		}
 		
 		//multiply by 10^(N*2)
-		//pads with a full length of zeroes
+		//pads with a full length of zeroes//
 		HugeInteger z2_term = new HugeInteger(0,z2.negative,z2.intArr.length+(N*2));
 		for(int i=0; i<z2.intArr.length; i++) {
 			z2_term.intArr[N*2+i] = z2.intArr[i];
